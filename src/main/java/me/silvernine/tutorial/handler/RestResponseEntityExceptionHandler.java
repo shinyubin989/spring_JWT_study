@@ -18,6 +18,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(value = { DuplicateMemberException.class })
     @ResponseBody
     protected ErrorDTO badRequest(RuntimeException ex, WebRequest request) {
-        return new ErrorDTO(CONFLICT.value(), ex.getMessage());
+        return new ErrorDTO(CONFLICT.value(), false, ex.getMessage());
     }
 }

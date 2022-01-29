@@ -2,32 +2,22 @@ package me.silvernine.tutorial.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;
 
+@Getter
+@Setter
 public class ErrorDTO {
     private final int status;
     private final String message;
-    private List<FieldError> fieldErrors = new ArrayList<>();
+    private boolean success = false;
 
-    public ErrorDTO(int status, String message) {
+    public ErrorDTO(int status, boolean success, String message) {
         this.status = status;
+        this.success = success;
         this.message = message;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void addFieldError(String objectName, String path, String message) {
-        FieldError error = new FieldError(objectName, path, message);
-        fieldErrors.add(error);
-    }
-
-    public List<FieldError> getFieldErrors() {
-        return fieldErrors;
     }
 }

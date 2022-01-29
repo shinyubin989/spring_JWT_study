@@ -27,10 +27,6 @@ public class MethodArgumentNotValidExceptionHandler {
     }
 
     private ErrorDTO processFieldErrors(List<org.springframework.validation.FieldError> fieldErrors) {
-        ErrorDTO errorDTO = new ErrorDTO(BAD_REQUEST.value(), "@Valid Error");
-        for (org.springframework.validation.FieldError fieldError: fieldErrors) {
-            errorDTO.addFieldError(fieldError.getObjectName(), fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        return errorDTO;
+        return new ErrorDTO(BAD_REQUEST.value(), false, "@Valid Error");
     }
 }

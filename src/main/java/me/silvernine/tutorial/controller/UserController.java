@@ -1,19 +1,13 @@
 package me.silvernine.tutorial.controller;
 
 import me.silvernine.tutorial.dto.UserDto;
-import me.silvernine.tutorial.entity.User;
 import me.silvernine.tutorial.service.UserService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
@@ -21,32 +15,31 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        return ResponseEntity.ok("hello");
-    }
-
-    @PostMapping("/test-redirect")
-    public void testRedirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/api/user");
-    }
-
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> signup(
+    public UserDto.SignupResponse signup(
             @Valid @RequestBody UserDto userDto
     ) {
-        return ResponseEntity.ok(userService.signup(userDto));
+        if (userService.signup(userDto)) {
+            return new UserDto.SignupResponse(200, true, "회원가입 성공");
+        }
+        return new UserDto.SignupResponse(400, false, "회원가입 실패");
     }
 
-    @GetMapping("/user")
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    public ResponseEntity<UserDto> getMyUserInfo(HttpServletRequest request) {
-        return ResponseEntity.ok(userService.getMyUserWithAuthorities());
-    }
 
-    @GetMapping("/user/{username}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<UserDto> getUserInfo(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUserWithAuthorities(username));
-    }
+//    @GetMapping("/user")
+//    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+//    public ResponseEntity<UserDto> getMyUserInfo(HttpServletRequest request) {
+//        return ResponseEntity.ok(userService.getMyUserWithAuthorities());
+//    }
+//
+//    @GetMapping("/user/{username}")
+//    @PreAuthorize("hasAnyRole('ADMIN')")
+//    public ResponseEntity<UserDto> getUserInfo(@PathVariable String username) {
+//        return ResponseEntity.ok(userService.getUserWithAuthorities(username));
+//    }
+
+//    @PostMapping("/test-redirect")
+//    public void testRedirect(HttpServletResponse response) throws IOException {
+//        response.sendRedirect("/api/user");
+//    }
 }

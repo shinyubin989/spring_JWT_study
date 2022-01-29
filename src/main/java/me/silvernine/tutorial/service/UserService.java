@@ -23,10 +23,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserDto signup(UserDto userDto) {
+    public boolean signup(UserDto userDto) {
         if (userRepository.findOneWithAuthoritiesByUsername(userDto.getUsername()).orElse(null) != null) {
             throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
         }
+        /*
+            {
+                "status": 409,
+                "message": "이미 가입되어 있는 유저입니다."
+    }       }
+         */
 
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
@@ -36,11 +42,14 @@ public class UserService {
                 .username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .nickname(userDto.getNickname())
+                .tel(userDto.getTel())
                 .authorities(Collections.singleton(authority))
                 .activated(true)
                 .build();
 
-        return UserDto.from(userRepository.save(user));
+        userRepository.save(user);
+
+        return true;
     }
 
     @Transactional(readOnly = true)
